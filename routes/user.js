@@ -21,4 +21,32 @@ router.post("/user/reset", resetPassword);
 
 
 
+
+router.get("/user/referrer/:id", isAuth, async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    // Fetch the user to get the referrer's ObjectId
+    const user = await User.findById(id);
+    if (!user) return res.status(404).send({ message: "User not found" });
+
+    // Fetch the referrer's details using the ObjectId
+    const referrer = await User.findById(user.referrer);
+    if (!referrer) return res.status(404).send({ message: "Referrer not found" });
+
+    // Send the referrer's details in the response
+    res.status(200).send({
+      referrer: {
+        name: referrer.name,
+        email: referrer.email,
+        contact: referrer.contact || "N/A",
+      },
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send({ message: "Server error" });
+  }
+});
+
+
 export default router;
