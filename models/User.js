@@ -33,10 +33,6 @@ const userSchema = new mongoose.Schema({
     ref: "User",
     default: null,
   },
-  earnings: {
-    type: Number,
-    default: 0, // Updated when someone uses their referral link
-  },
   contact: {
     type: String,
     required: true,
@@ -46,6 +42,17 @@ const userSchema = new mongoose.Schema({
       },
       message: (props) => `${props.value} is not a valid 10-digit phone number!`,
     },
+  },
+  earnings: {
+    total: { type: Number, default: 0 }, // Lifetime total earnings
+    today: { type: Number, default: 0 }, // Earnings today
+    week: { type: Number, default: 0 }, // Earnings this week
+    month: { type: Number, default: 0 }, // Earnings this month
+    lastUpdated: { type: Date, default: new Date() }, // Last update for earnings
+  },
+  createdAt: {
+    type: Date,
+    default: Date.now, // Automatically set the creation date
   },
 });
 

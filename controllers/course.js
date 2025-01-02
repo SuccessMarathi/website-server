@@ -4,6 +4,7 @@ import  Courses  from "../models/Courses.js";
 import { Lecture } from "../models/Lecture.js";
 import  User  from "../models/User.js";
 import Transaction from "../models/Transaction.js";
+import mongoose from "mongoose";
 
 
 export const getAllCourses = TryCatch(async (req, res) => {
@@ -122,6 +123,8 @@ export const checkout = TryCatch(async (req, res) => {
 
 
 // controllers/coursesController.js
+
+
 export const verifyPayment = TryCatch(async (req, res) => {
   const { courseId, name, email, transactionId, referralId } = req.body;
 
@@ -149,6 +152,7 @@ export const verifyPayment = TryCatch(async (req, res) => {
   }
 
   let transactionStatus = "Failure"; // Default to failure
+
   try {
     // Add the course to the user's purchasedCourses array
     if (!user.purchasedCourses.includes(courseId)) {
@@ -158,15 +162,18 @@ export const verifyPayment = TryCatch(async (req, res) => {
       if (referralId) {
         const referrer = await User.findOne({ referralLink: referralId });
         if (referrer) {
-          referrer.earnings += course.price * 0.7; // Add 70% of course price
+          const referrerEarnings = course.price * 0.7; // 70% of course price
+          updateEarnings(referrer, referrerEarnings);
           await referrer.save();
+
           user.referrer = referrer;
 
           // Find and update grandReferrer if referrer has a referrer
           if (referrer.referrer) {
             const grandReferrer = await User.findById(referrer.referrer);
             if (grandReferrer) {
-              grandReferrer.earnings += course.price * 0.1; // Add 10% of course price
+              const grandReferrerEarnings = course.price * 0.1; // 10% of course price
+              updateEarnings(grandReferrer, grandReferrerEarnings);
               await grandReferrer.save();
             }
           }
@@ -201,6 +208,35 @@ export const verifyPayment = TryCatch(async (req, res) => {
     timestamp: new Date(),
   });
 });
+
+// Helper function to update earnings
+const updateEarnings = (user, amount) => {
+  const now = new Date();
+  const today = now.toDateString(); // e.g., "Tue Jan 02 2025"
+
+  // Reset earnings if the day, week, or month has changed
+  const isNewDay = today !== new Date(user.earnings.lastUpdated).toDateString();
+  const isNewWeek = now.getWeek() !== new Date(user.earnings.lastUpdated).getWeek();
+  const isNewMonth = now.getMonth() !== new Date(user.earnings.lastUpdated).getMonth();
+
+  if (isNewDay) user.earnings.today = 0;
+  if (isNewWeek) user.earnings.week = 0;
+  if (isNewMonth) user.earnings.month = 0;
+
+  // Update earnings
+  user.earnings.today += amount;
+  user.earnings.week += amount;
+  user.earnings.month += amount;
+  user.earnings.total += amount;
+  user.earnings.lastUpdated = now;
+};
+
+// Utility function to get the current week number
+Date.prototype.getWeek = function () {
+  const oneJan = new Date(this.getFullYear(), 0, 1);
+  const numberOfDays = Math.floor((this - oneJan) / (24 * 60 * 60 * 1000));
+  return Math.ceil((this.getDay() + 1 + numberOfDays) / 7);
+};
 
 
 

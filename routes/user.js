@@ -1,4 +1,5 @@
 import express from "express";
+import User from "../models/User.js";
 import {
   forgotPassword,
   loginUser,
@@ -21,20 +22,27 @@ router.post("/user/reset", resetPassword);
 
 
 
-
+//try this for my sccount page
 router.get("/user/referrer/:id", isAuth, async (req, res) => {
   try {
     const { id } = req.params;
 
-    // Fetch the user to get the referrer's ObjectId
     const user = await User.findById(id);
     if (!user) return res.status(404).send({ message: "User not found" });
 
-    // Fetch the referrer's details using the ObjectId
+    if (!user.referrer) {
+      return res.status(200).send({
+        referrer: {
+          name: "Not applicable",
+          email: "Not applicable",
+          contact: "Not applicable",
+        },
+      });
+    }
+
     const referrer = await User.findById(user.referrer);
     if (!referrer) return res.status(404).send({ message: "Referrer not found" });
 
-    // Send the referrer's details in the response
     res.status(200).send({
       referrer: {
         name: referrer.name,
@@ -43,10 +51,11 @@ router.get("/user/referrer/:id", isAuth, async (req, res) => {
       },
     });
   } catch (error) {
-    console.error(error);
+    console.error("Error fetching referrer:", error);
     res.status(500).send({ message: "Server error" });
   }
 });
+
 
 
 export default router;
