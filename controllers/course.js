@@ -123,8 +123,6 @@ export const checkout = TryCatch(async (req, res) => {
 
 
 // controllers/coursesController.js
-
-
 export const verifyPayment = TryCatch(async (req, res) => {
   const { courseId, name, email, transactionId, referralId } = req.body;
 
@@ -153,6 +151,24 @@ export const verifyPayment = TryCatch(async (req, res) => {
 
   let transactionStatus = "Failure"; // Default to failure
 
+  // Define earnings for each course
+  // const earningsMapping = {
+  //   "1": { referrer: 350, grandReferrer: 50 },
+  //   "2": { referrer: 700, grandReferrer: 100 },
+  //   "3": { referrer: 1605, grandReferrer: 220 },
+  //   "4": { referrer: 3650, grandReferrer: 399 },
+  // };
+
+  //for offer
+   const earningsMapping = {
+    "1": { referrer: 50, grandReferrer: 1 },
+    "2": { referrer: 100, grandReferrer: 1 },
+    "3": { referrer: 220, grandReferrer: 1 },
+    "4": { referrer: 500, grandReferrer: 1 },
+  };
+
+  const earnings = earningsMapping[courseId] || { referrer: 0, grandReferrer: 0 };
+
   try {
     // Add the course to the user's purchasedCourses array
     if (!user.purchasedCourses.includes(courseId)) {
@@ -162,8 +178,7 @@ export const verifyPayment = TryCatch(async (req, res) => {
       if (referralId) {
         const referrer = await User.findOne({ referralLink: referralId });
         if (referrer) {
-          const referrerEarnings = course.price * 0.7; // 70% of course price
-          updateEarnings(referrer, referrerEarnings);
+          updateEarnings(referrer, earnings.referrer);
           await referrer.save();
 
           user.referrer = referrer;
@@ -172,8 +187,7 @@ export const verifyPayment = TryCatch(async (req, res) => {
           if (referrer.referrer) {
             const grandReferrer = await User.findById(referrer.referrer);
             if (grandReferrer) {
-              const grandReferrerEarnings = course.price * 0.1; // 10% of course price
-              updateEarnings(grandReferrer, grandReferrerEarnings);
+              updateEarnings(grandReferrer, earnings.grandReferrer);
               await grandReferrer.save();
             }
           }
@@ -237,6 +251,8 @@ Date.prototype.getWeek = function () {
   const numberOfDays = Math.floor((this - oneJan) / (24 * 60 * 60 * 1000));
   return Math.ceil((this.getDay() + 1 + numberOfDays) / 7);
 };
+
+
 
 
 
