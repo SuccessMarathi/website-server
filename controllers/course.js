@@ -152,20 +152,20 @@ export const verifyPayment = TryCatch(async (req, res) => {
   let transactionStatus = "Failure"; // Default to failure
 
   // Define earnings for each course
-  // const earningsMapping = {
-  //   "1": { referrer: 350, grandReferrer: 50 },
-  //   "2": { referrer: 700, grandReferrer: 100 },
-  //   "3": { referrer: 1605, grandReferrer: 220 },
-  //   "4": { referrer: 3650, grandReferrer: 399 },
-  // };
+  const earningsMapping = {
+    "1": { referrer: 350, grandReferrer: 50 },
+    "2": { referrer: 700, grandReferrer: 100 },
+    "3": { referrer: 1605, grandReferrer: 220 },
+    "4": { referrer: 3650, grandReferrer: 399 },
+  };
 
   //for offer
-   const earningsMapping = {
-    "1": { referrer: 50, grandReferrer: 1 },
-    "2": { referrer: 100, grandReferrer: 1 },
-    "3": { referrer: 220, grandReferrer: 1 },
-    "4": { referrer: 500, grandReferrer: 1 },
-  };
+  //  const earningsMapping = {
+  //   "1": { referrer: 50, grandReferrer: 1 },
+  //   "2": { referrer: 100, grandReferrer: 1 },
+  //   "3": { referrer: 220, grandReferrer: 1 },
+  //   "4": { referrer: 500, grandReferrer: 1 },
+  // };
 
   const earnings = earningsMapping[courseId] || { referrer: 0, grandReferrer: 0 };
 
