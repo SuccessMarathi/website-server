@@ -155,14 +155,14 @@ export const updateRole = TryCatch(async (req, res) => {
 export const getAllUsers = async (req, res) => {
   try {
     // Fetch all users, selecting only the required fields
-    const users = await User.find({}, "name contact earnings").sort({ name: 1 }); // Sort alphabetically by name
+    const users = await User.find({}, "name contact earnings.total").sort({ name: 1 }); // Select earnings.total only
 
-    // Add numbering to each user
+    // Add numbering and map fields for the response
     const numberedUsers = users.map((user, index) => ({
       number: index + 1,
       name: user.name,
       contact: user.contact,
-      earnings: user.earnings,
+      earnings: user.earnings.total, // Use earnings.total
     }));
 
     res.status(200).json({
@@ -177,4 +177,3 @@ export const getAllUsers = async (req, res) => {
     });
   }
 };
-
