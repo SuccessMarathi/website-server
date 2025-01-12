@@ -42,6 +42,7 @@ const userSchema = new mongoose.Schema({
       },
       message: (props) => `${props.value} is not a valid 10-digit phone number!`,
     },
+
   },
   earnings: {
     total: { type: Number, default: 0 }, // Lifetime total earnings
@@ -54,6 +55,9 @@ const userSchema = new mongoose.Schema({
     type: Date,
     default: Date.now, // Automatically set the creation date
   },
+
+
+  
 });
 
 const User = mongoose.model("User", userSchema);

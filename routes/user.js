@@ -6,8 +6,13 @@ import {
   myProfile,
   register,
   resetPassword,
+  getAffiliates
 } from "../controllers/user.js";
 import { isAuth } from "../middlewares/isAuth.js";
+
+//test
+// import { uploadUserImage} from "../controllers/user.js";
+// import multer from "multer";
 //import { addProgress, getYourProgress } from "../controllers/course.js";
 
 const router = express.Router();
@@ -19,6 +24,14 @@ router.post("/user/forgot", forgotPassword);
 router.post("/user/reset", resetPassword);
 //router.post("/user/progress", isAuth, addProgress);
 //router.get("/user/progress", isAuth, getYourProgress);
+
+router.get("/user/my-affiliates", isAuth, getAffiliates);
+
+
+// //test
+// const upload = multer({ dest: "uploads/" }); // Temporary storage for uploaded files
+
+// router.post("/upload-image", isAuth, upload.single("file"), uploadUserImage);
 
 
 
