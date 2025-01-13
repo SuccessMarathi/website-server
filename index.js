@@ -3,6 +3,8 @@ import dotenv from "dotenv";
 import { connectDb } from "./database/db.js";
 import Razorpay from "razorpay";
 import cors from "cors";
+//testing
+import { resetEarnings } from "./middlewares/resetEarnings.js";
 
 dotenv.config();
 
@@ -41,4 +43,5 @@ app.use("/api", adminRoutes);
 app.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);
   connectDb();
+  resetEarnings();
 });
