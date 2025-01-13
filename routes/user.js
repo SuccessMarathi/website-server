@@ -6,7 +6,8 @@ import {
   myProfile,
   register,
   resetPassword,
-  getAffiliates
+  getAffiliates,
+  getLeaderboard
 } from "../controllers/user.js";
 import { isAuth } from "../middlewares/isAuth.js";
 
@@ -26,6 +27,7 @@ router.post("/user/reset", resetPassword);
 //router.get("/user/progress", isAuth, getYourProgress);
 
 router.get("/user/my-affiliates", isAuth, getAffiliates);
+router.get("/leaderboard", isAuth, getLeaderboard);
 
 
 // //test

@@ -203,3 +203,27 @@ export const getAffiliates = async (req, res) => {
     });
   }
 };
+
+
+//controller to fetch the top 10 users with highest earnings
+export const getLeaderboard = async (req, res) => {
+  try {
+    // Fetch the top 10 users sorted by earnings.total in descending order
+    const leaderboard = await User.find({})
+      .sort({ "earnings.total": -1 }) // Sort by earnings.total in descending order
+      .limit(10) // Limit the result to 10 users
+      .select("name earnings.total"); // Select only the fields we want to display
+
+    res.status(200).json({
+      success: true,
+      message: "Leaderboard fetched successfully",
+      leaderboard,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Error fetching leaderboard",
+      error: error.message,
+    });
+  }
+};
