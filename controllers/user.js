@@ -3,46 +3,15 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import TryCatch from "../middlewares/TryCatch.js";
 import { v4 as uuidv4 } from "uuid";
-
+import ProfileImage from "../models/ProfileImage.js";
 //test
 import cloudinary from '../middlewares/cloudinary.js'
 
 
-//test
-// export const uploadUserImage = TryCatch(async (req, res) => {
-//   const userId = req.user.id; // Assuming the user ID is stored in the JWT
-//   const { file } = req.files; // Assuming the image file comes as `file`
-
-//   if (!file) {
-//     return res.status(400).json({ message: "Please upload an image file." });
-//   }
-
-//   // Upload image to Cloudinary
-//   const result = await cloudinary.uploader.upload(file.path, {
-//     folder: "user_images",
-//     use_filename: true,
-//     unique_filename: false,
-//   });
-
-//   // Update user's image field in the database
-//   const user = await User.findById(userId);
-
-//   if (!user) {
-//     return res.status(404).json({ message: "User not found." });
-//   }
-
-//   user.image = result.secure_url;
-//   await user.save();
-
-//   res.status(200).json({
-//     success: true,
-//     message: "Profile image uploaded successfully.",
-//     imageUrl: result.secure_url,
-//   });
-// });
 
 
-//DO NOT TOUCH
+
+
 export const register = TryCatch(async (req, res) => {
   const { email, name, password, contact } = req.body;
 
@@ -223,6 +192,32 @@ export const getLeaderboard = async (req, res) => {
     res.status(500).json({
       success: false,
       message: "Error fetching leaderboard",
+      error: error.message,
+    });
+  }
+};
+
+export const getUserProfileImage = async (req, res) => {
+  try {
+    const userID = req.user._id; // Extract user ID from the authenticated request
+
+    // Find the profile image associated with the user
+    const profileImage = await ProfileImage.findOne({ userID });
+
+    if (!profileImage) {
+      return res.status(404).json({
+        message: "Profile image not found for this user.",
+      });
+    }
+
+    res.status(200).json({
+      message: "Profile image fetched successfully.",
+      profileImage: profileImage.profileImage, // Return the image URL
+    });
+  } catch (error) {
+    console.error("Error fetching profile image:", error);
+    res.status(500).json({
+      message: "An error occurred while fetching the profile image.",
       error: error.message,
     });
   }

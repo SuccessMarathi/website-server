@@ -55,9 +55,8 @@ const userSchema = new mongoose.Schema({
     type: Date,
     default: Date.now, // Automatically set the creation date
   },
-
-
   
+ 
 });
 
 const User = mongoose.model("User", userSchema);

@@ -5,6 +5,12 @@ import Razorpay from "razorpay";
 import cors from "cors";
 //testing
 import { resetEarnings } from "./middlewares/resetEarnings.js";
+import bodyParser from "body-parser";
+
+
+
+
+import multer from "multer";
 
 dotenv.config();
 
@@ -18,7 +24,10 @@ const app = express();
 // using middlewares
 app.use(express.json());
 app.use(cors());
-app.use(express.urlencoded({ extended: true }));
+
+
+app.use(bodyParser.urlencoded({extended:false}));
+app.use(bodyParser.json());
 
 const port = process.env.PORT;
 
