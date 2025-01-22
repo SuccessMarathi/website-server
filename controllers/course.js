@@ -154,9 +154,11 @@ export const verifyPayment = TryCatch(async (req, res) => {
   // Define earnings for each course
   const earningsMapping = {
     "1": { referrer: 160, grandReferrer: 1 },
-    "2": { referrer: 700, grandReferrer: 100 },
-    "3": { referrer: 1605, grandReferrer: 220 },
-    "4": { referrer: 3650, grandReferrer: 399 },
+    "2": { referrer: 280, grandReferrer: 40 },
+    "3": { referrer: 490, grandReferrer: 70 },
+    "4": { referrer: 700, grandReferrer: 100 },
+    "5": { referrer: 1650, grandReferrer: 220 },
+    "6": { referrer: 3650, grandReferrer: 399 },
   };
 
   //for offer
