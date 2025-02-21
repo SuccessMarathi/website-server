@@ -14,6 +14,7 @@ import multer from "multer";
 
 dotenv.config();
 
+
 export const instance = new Razorpay({
   key_id: process.env.Razorpay_Key,
   key_secret: process.env.Razorpay_Secret,
@@ -49,8 +50,27 @@ app.use("/api", userRoutes);
 app.use("/api", courseRoutes);
 app.use("/api", adminRoutes);
 
+
+app.post("/create-order", async (req, res) => {
+  try {
+      const options = {
+          amount: req.body.amount * 100, // Convert amount to paisa (₹1 = 100 paisa)
+          currency: "INR",
+          receipt: "order_rcptid_" + Math.random().toString(36).substring(7),
+          payment_capture: 1, // Auto-capture payment
+      };
+
+      const order = await instance.orders.create(options);
+      res.json(order);
+  } catch (error) {
+      res.status(500).send("Error creating order: " + error.message);
+  }
+});
+
+connectDb();
+
 app.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);
-  connectDb();
+  
   resetEarnings();
 });
